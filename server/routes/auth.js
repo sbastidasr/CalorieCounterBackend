@@ -1,83 +1,96 @@
-var jwt = require('jwt-simple');
+//var jwt = require('jwt-simple');
+var User     = require('../models/User');
+var jwt        = require("jsonwebtoken");
+var secretModule = require('../config/secret');
+var JWT_SECRET = secretModule();
 
 var auth = {
 
-  login: function(req, res) {
+  login:function(req,res){
+    User.findOne({email: req.body.email, password: req.body.password}, function(err, user) {
+      if (err) {
+        res.json({
+          type: false,
+          data: "Error occured: " + err
+        });
+      } else {
+        if (user) {
+          res.json({
+            type: true,
+            data: user
+          });
+        } else {
+          res.json({
+            type: false,
+            data: "Incorrect email/password"
+          });
+        }
+      }
+    });
+  },
 
-    var username = req.body.username || '';
-    var password = req.body.password || '';
+  signup: function(req, res) {
+    User.findOne({email:req.body.email, password: req.body.password}, function(err, user) {
+      if (err) {
+        res.status(401);
+        res.json({
+          type: false,
+          data: "Error occured: " + err
+        });
+      } else {
+        if (user) {
+          res.json({
+            type: false,
+            data: "User already exists!"
+          });
+        } else {
+          var userModel = new User();
+          userModel.email = req.body.email;
+          userModel.password = req.body.password;
+          userModel.save(function(err, user) {
+            user.token = jwt.sign(user, JWT_SECRET);
+            user.save(function(err, user1) {
+              res.json({
+                type: true,
+                data: user1
+              });
+            });
+          })
+        }
+      }
+    });
+  },
+/*
+  validateUser: function(token) {
+    User.findOne({token: token})
+    function(err, user) {
+      if (err) {
+        return null;
+      } else {
+          console.log(user);
+        return user;
+      }
+    });
+  }*/
+  validateUser: function(token) {
+  //  return User.findOne({token: token}).exec()
+  }
 
-    if (username == '' || password == '') {
-      res.status(401);
-      res.json({
-        "status": 401,
-        "message": "Invalid credentials"
+
+/*
+  User.findOne({username: username}).exec()
+  .then(function(user){
+    var result = [];
+    return Project.findOne({name: project, user_id: user._id}).exec()
+      .then(function(project){
+        return [user, project];
       });
-      return;
-    }
+  })
+*/
 
-    // Fire a query to your DB and check if the credentials are valid
-    var dbUserObj = auth.validate(username, password);
-   
-    if (!dbUserObj) { // If authentication fails, we send a 401 back
-      res.status(401);
-      res.json({
-        "status": 401,
-        "message": "Invalid credentials"
-      });
-      return;
-    }
-
-    if (dbUserObj) {
-
-      // If authentication is success, we will generate a token
-      // and dispatch it to the client
-
-      res.json(genToken(dbUserObj));
-    }
-
-  },
-
-  validate: function(username, password) {
-    // spoofing the DB response for simplicity
-    var dbUserObj = { // spoofing a userobject from the DB. 
-      name: 'arvind',
-      role: 'admin',
-      username: 'arvind@myapp.com'
-    };
-
-    return dbUserObj;
-  },
-
-  validateUser: function(username) {
-    // spoofing the DB response for simplicity
-    var dbUserObj = { // spoofing a userobject from the DB. 
-      name: 'arvind',
-      role: 'admin',
-      username: 'arvind@myapp.com'
-    };
-
-    return dbUserObj;
-  },
 }
 
-// private method
-function genToken(user) {
-  var expires = expiresIn(7); // 7 days
-  var token = jwt.encode({
-    exp: expires
-  }, require('../config/secret')());
+  //private functions
+  //
 
-  return {
-    token: token,
-    expires: expires,
-    user: user
-  };
-}
-
-function expiresIn(numDays) {
-  var dateObj = new Date();
-  return dateObj.setDate(dateObj.getDate() + numDays);
-}
-
-module.exports = auth;
+  module.exports = auth;

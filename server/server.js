@@ -3,6 +3,15 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/caloriecounter', function(err) {
+    if(err) {
+        console.log('connection error', err);
+    } else {
+        console.log('connection successful');
+    }
+});
+
 var app = express();
 
 app.use(logger('dev'));
@@ -21,9 +30,16 @@ app.all('/*', function(req, res, next) {
   }
 });
 
+
+//Todos routes
+var todos = require('./routes/todos');
+app.use('/todos', todos);
+//
+
+
 // Auth Middleware - This will check if the token is valid
 // Only the requests that start with /api/v1/* will be checked for the token.
-// Any URL's that do not follow the below pattern should be avoided unless you 
+// Any URL's that do not follow the below pattern should be avoided unless you
 // are sure that authentication is not needed
 app.all('/api/v1/*', [require('./middlewares/validateRequest')]);
 
@@ -35,6 +51,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // Start the server
 app.set('port', process.env.PORT || 3000);
