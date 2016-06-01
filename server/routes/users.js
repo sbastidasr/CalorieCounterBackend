@@ -11,7 +11,7 @@ var users = {
   },
 
   getOne: function(req, res, next) {
-    User.findById(req.params.id, function (err, user) {
+    User.findById(req.params.id||token, function (err, user) {
       if (err) return next(err);
       res.json(user);
     });
@@ -40,30 +40,45 @@ var users = {
 
   calculateCaloriesOfDay:function(req,res,next) {
     getCurrentUserFromToken(req, function(err, user){
-        meals.getCalorieCountOfDayForUserId(user.id, req, res, next);
+      meals.getCalorieCountOfDayForUserId(user.id, req, res, next);
     });
   },
 
   getAllMeals:function(req,res,next) {
     getCurrentUserFromToken(req, function(err, user){
-        meals.getAllForUserId(user.id, req, res, next);
+      meals.getAllForUserId(user.id, req, res, next);
+    });
+  },
+  getUserFromToken:function(req,res,next) {
+    getCurrentUserFromToken(req, function(err, user){
+      res.json(user);
     });
   }
 
 };
 
-//private
-function getCurrentUserFromToken(req,cb) {
+function getToken(req){
   var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
   if (token) {
     try {
       var decoded = jwt.decode(token, require('../config/secret.js')());
-      User.findOne({token: token}, function(err, user) {
-        cb(err, user);
-      });
-    } catch (err) {
-      cb(err);
+      if(decoded){
+        return token;
     }
+    } catch (err) {
+      return null;
+    }
+  }
+}
+
+//private
+function getCurrentUserFromToken(req,cb) {
+  var token = getToken(req);
+  if (token) {
+    console.log("token: "+token)
+    User.findOne({token: token}, function(err, user) {
+      cb(err, user);
+    });
   }
 }
 

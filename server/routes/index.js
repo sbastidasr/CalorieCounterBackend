@@ -19,8 +19,11 @@ router.post('/api/v1/meals/', meals.create);
 router.put('/api/v1/meal/:id', meals.update);
 router.delete('/api/v1/meal/:id', meals.delete);
 
-router.get('/api/v1/user/calories', user.calculateCaloriesOfDay);
+router.get('/api/v1/user/calculateCaloriesOfDay', user.calculateCaloriesOfDay);
 router.get('/api/v1/user/meals', user.getAllMeals);
+router.get('/api/v1/user/', user.getUserFromToken);
+//router.put('/api/v1/user/:token', user.updateSelf);
+
 
 /* This shouldnt be available to non admins
 router.get('/api/v1/user', user.getAll);
