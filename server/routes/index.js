@@ -19,12 +19,13 @@ router.post('/api/v1/meal/', meals.create);
 router.put('/api/v1/meal/:id', meals.update);
 router.delete('/api/v1/meal/:id', meals.delete);
 
+/* This shouldnt be available to non admins
 router.get('/api/v1/user', user.getAll);
 router.get('/api/v1/user/:id', user.getOne);
 router.post('/api/v1/user/', user.create);
 router.put('/api/v1/user/:id', user.update);
 router.delete('/api/v1/user/:id', user.delete);
-
+*/
 /*
  * Routes that can be accessed only by authenticated & authorized users
  */

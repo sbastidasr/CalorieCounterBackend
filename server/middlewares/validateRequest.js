@@ -46,7 +46,7 @@ module.exports = function(req, res, next) {
       });
       return;
     } else {
-      if ((req.url.indexOf('admin') >= 0 && dbUser.role == 'admin') || (req.url.indexOf('admin') < 0 && req.url.indexOf('/api/v1/') >= 0)) {
+      if ((req.url.indexOf('admin') >= 0 && user.admin == true) || (req.url.indexOf('admin') < 0 && req.url.indexOf('/api/v1/') >= 0)) {
         next(); // To move to next middleware
       } else {
         res.status(403);
