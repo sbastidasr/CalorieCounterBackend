@@ -31,13 +31,6 @@ app.all('/*', function(req, res, next) {
   }
 });
 
-
-//Todos routes
-var todos = require('./routes/todos');
-app.use('/todos', todos);
-//
-
-
 // Auth Middleware - This will check if the token is valid
 // Only the requests that start with /api/v1/* will be checked for the token.
 // Any URL's that do not follow the below pattern should be avoided unless you
