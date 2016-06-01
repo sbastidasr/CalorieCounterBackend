@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var config = require('../config');
+var config = require('./config');
 var mongoose = require('mongoose');
 
 mongoose.connect(config.db.mongodb, function(err) {
