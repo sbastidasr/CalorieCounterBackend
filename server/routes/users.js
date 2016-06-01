@@ -1,4 +1,6 @@
 var User = require('../models/User.js');
+var jwt = require('jwt-simple');
+var meals = require('./meals.js');
 
 var users = {
   getAll: function(req, res, next) {
@@ -34,7 +36,35 @@ var users = {
       if (err) return next(err);
       res.json(user);
     });
+  },
+
+  calculateCaloriesOfDay:function(req,res,next) {
+    getCurrentUserFromToken(req, function(err, user){
+        meals.getCalorieCountOfDayForUserId(user.id, req, res, next);
+    });
+  },
+
+  getAllMeals:function(req,res,next) {
+    getCurrentUserFromToken(req, function(err, user){
+        meals.getAllForUserId(user.id, req, res, next);
+    });
   }
+
 };
+
+//private
+function getCurrentUserFromToken(req,cb) {
+  var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
+  if (token) {
+    try {
+      var decoded = jwt.decode(token, require('../config/secret.js')());
+      User.findOne({token: token}, function(err, user) {
+        cb(err, user);
+      });
+    } catch (err) {
+      cb(err);
+    }
+  }
+}
 
 module.exports = users;

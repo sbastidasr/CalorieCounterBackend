@@ -13,11 +13,14 @@ router.post('/signup', auth.signup);
 /*
  * Routes that can be accessed only by autheticated users
  */
-router.get('/api/v1/meal', meals.getAll);
+router.get('/api/v1/meals', meals.getAll);
 router.get('/api/v1/meal/:id', meals.getOne);
-router.post('/api/v1/meal/', meals.create);
+router.post('/api/v1/meals/', meals.create);
 router.put('/api/v1/meal/:id', meals.update);
 router.delete('/api/v1/meal/:id', meals.delete);
+
+router.get('/api/v1/user/calories', user.calculateCaloriesOfDay);
+router.get('/api/v1/user/meals', user.getAllMeals);
 
 /* This shouldnt be available to non admins
 router.get('/api/v1/user', user.getAll);
@@ -31,7 +34,7 @@ router.delete('/api/v1/user/:id', user.delete);
  */
 router.get('/api/v1/admin/users', user.getAll);
 router.get('/api/v1/admin/user/:id', user.getOne);
-router.post('/api/v1/admin/user/', user.create);
+router.post('/api/v1/admin/users/', user.create);
 router.put('/api/v1/admin/user/:id', user.update);
 router.delete('/api/v1/admin/user/:id', user.delete);
 

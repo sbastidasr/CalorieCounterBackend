@@ -15,10 +15,7 @@ var auth = {
         });
       } else {
         if (user) {
-          res.json({
-            type: true,
-            data: user
-          });
+          res.json(user);
         } else {
           res.json({
             type: false,
@@ -50,10 +47,7 @@ var auth = {
           userModel.save(function(err, user) {
             user.token = jwt.sign(user, config.secret);
             user.save(function(err, user1) {
-              res.json({
-                type: true,
-                data: user1
-              });
+              res.json(user1);
             });
           })
         }
