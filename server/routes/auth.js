@@ -2,7 +2,7 @@
 var User     = require('../models/User');
 var jwt        = require("jsonwebtoken");
 var secretModule = require('../config/secret');
-var JWT_SECRET = secretModule();
+var config = require('../config');
 
 var auth = {
 
@@ -48,7 +48,7 @@ var auth = {
           userModel.email = req.body.email;
           userModel.password = req.body.password;
           userModel.save(function(err, user) {
-            user.token = jwt.sign(user, JWT_SECRET);
+            user.token = jwt.sign(user, config.secret);
             user.save(function(err, user1) {
               res.json({
                 type: true,
