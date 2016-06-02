@@ -67,6 +67,7 @@ var meals = {
   function filterMeals (meals, fromTime, toTime,res){
     fromTime = fromTime? fromTime.getUTCHours() : 0;
     toTime = toTime ? toTime.getUTCHours() : 24;
+    if(toTime<24){toTime+=1;}
     meals = meals.filter(function(meal){
       return (meal.date.getHours()>=fromTime && meal.date.getHours() <= toTime )
     })
