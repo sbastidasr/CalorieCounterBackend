@@ -45,7 +45,7 @@ var users = {
   },
 
   getAllMeals:function(req,res,next) {
-    getCurrentUserFromToken(req, function(err, user){
+  getCurrentUserFromToken(req, function(err, user){
       meals.getAllForUserId(user.id, req, res, next);
     });
   },
@@ -82,7 +82,6 @@ function getToken(req){
 function getCurrentUserFromToken(req,cb) {
   var token = getToken(req);
   if (token) {
-    console.log("token: "+token)
     User.findOne({token: token}, function(err, user) {
       cb(err, user);
     });
