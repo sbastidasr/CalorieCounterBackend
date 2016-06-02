@@ -21,8 +21,8 @@ router.delete('/api/v1/meal/:id', meals.delete);
 
 router.get('/api/v1/user/calculateCaloriesOfDay', user.calculateCaloriesOfDay);
 router.get('/api/v1/user/meals', user.getAllMeals);
-router.get('/api/v1/user/', user.getUserFromToken);
-//router.put('/api/v1/user/:token', user.updateSelf);
+router.get('/api/v1/user/', user.getCurrentUser); //with token
+router.put('/api/v1/user/', user.putCurrentUser); //with token
 
 
 /* This shouldnt be available to non admins

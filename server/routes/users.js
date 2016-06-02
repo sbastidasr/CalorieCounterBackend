@@ -49,14 +49,21 @@ var users = {
       meals.getAllForUserId(user.id, req, res, next);
     });
   },
-  getUserFromToken:function(req,res,next) {
+  getCurrentUser:function(req,res,next) {
     getCurrentUserFromToken(req, function(err, user){
       res.json(user);
     });
+  },
+  putCurrentUser:function(req,res,next) {
+    getCurrentUserFromToken(req, function(err, user){
+      req.params.id = user.id;
+      users.update(req,res,next);
+    });
   }
 
-};
+}
 
+//privates
 function getToken(req){
   var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
   if (token) {
@@ -64,7 +71,7 @@ function getToken(req){
       var decoded = jwt.decode(token, require('../config/secret.js')());
       if(decoded){
         return token;
-    }
+      }
     } catch (err) {
       return null;
     }
