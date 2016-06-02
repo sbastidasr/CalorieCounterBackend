@@ -9,16 +9,15 @@ var meals = {
   },
 
   getAllForUserId: function(id, req, res, next) {
-  var fromDate = new Date(req.query.fromDate*1000);
-  var toDate =  req.query.toDate? new Date(req.query.toDate*1000) : new Date('2222-04-11');
-                toDate.setDate(toDate.getDate() + 1); //to compensate all day
-                
-  var fromTime = new Date(req.query.fromTime*1000);
-  var toTime = new Date(req.query.toTime*1000);
+    var fromDate = new Date(req.query.fromDate*1000);
+    var toDate =  req.query.toDate? new Date(req.query.toDate*1000) : new Date('2222-04-11');
+    toDate.setDate(toDate.getDate() + 1); //to compensate all day
+    var fromTime = req.query.fromTime? new Date(req.query.fromTime*1000) : null;
+    var toTime = req.query.toTime? new Date(req.query.toTime*1000): null;
 
     Meal.find({user_id: id, date: {$gt: fromDate, $lt: toDate}},function (err, meals) {
       if (err) return next(err);
-      res.json(meals);
+      res.json(filterMeals(meals, fromTime,toTime,res));
     });
   },
 
@@ -27,8 +26,6 @@ var meals = {
       if (err) return next(err);
       var calsOfDay = meals.filter(function(meal){
         var d = new Date()
-        console.log(d.toDateString())
-        console.log(meal.date.toDateString())
         return (d.toDateString() === meal.date.toDateString());
       })
       .reduce(function(total, meal){
@@ -67,4 +64,12 @@ var meals = {
     }
   };
 
+  function filterMeals (meals, fromTime, toTime,res){
+    fromTime = fromTime? fromTime.getUTCHours() : 0;
+    toTime = toTime ? toTime.getUTCHours() : 24;
+    meals = meals.filter(function(meal){
+      return (meal.date.getHours()>=fromTime && meal.date.getHours() <= toTime )
+    })
+    return meals;
+  }
   module.exports = meals;
