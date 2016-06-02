@@ -9,15 +9,14 @@ var meals = {
   },
 
   getAllForUserId: function(id, req, res, next) {
-
-  console.log("query "+JSON.stringify(req.query));
-
   var fromDate = new Date(req.query.fromDate*1000);
-  var toDate = new Date(req.query.toDate*1000);
+  var toDate =  req.query.toDate? new Date(req.query.toDate*1000) : new Date('2222-04-11');
+                toDate.setDate(toDate.getDate() + 1); //to compensate all day
+                
   var fromTime = new Date(req.query.fromTime*1000);
   var toTime = new Date(req.query.toTime*1000);
 
-    Meal.find({user_id: id, date: {'$gt': fromDate, '$lt': toDate}},function (err, meals) {
+    Meal.find({user_id: id, date: {$gt: fromDate, $lt: toDate}},function (err, meals) {
       if (err) return next(err);
       res.json(meals);
     });
