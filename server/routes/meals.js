@@ -69,7 +69,7 @@ var meals = {
     toTime = toTime ? toTime.getUTCHours() : 24;
     if(toTime<24){toTime+=1;}
     meals = meals.filter(function(meal){
-      return (meal.date.getHours()>=fromTime && meal.date.getHours() <= toTime )
+      return (meal.date.getUTCHours()>=fromTime && meal.date.getUTCHours() <= toTime )
     })
     return meals;
   }

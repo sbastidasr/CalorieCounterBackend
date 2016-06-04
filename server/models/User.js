@@ -6,7 +6,7 @@ var UserSchema   = new Schema({
     password: String,
     token: String,
     admin: { type: Boolean, default: false },
-    expectedCalories: { type: Number, default: 0 },
+    expectedCalories: { type: Number, default: 2000 },
 });
 
 module.exports = mongoose.model('User', UserSchema);
