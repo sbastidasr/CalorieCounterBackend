@@ -65,11 +65,14 @@ var meals = {
   };
 
   function filterMeals (meals, fromTime, toTime,res){
-    fromTime = fromTime? fromTime.getUTCHours() : 0;
-    toTime = toTime ? toTime.getUTCHours() : 24;
+    fromTimeHours = fromTime? fromTime.getUTCHours() : 0;
+    toTimeHours = toTime ? toTime.getUTCHours() : 24;
+    fromTimeMins = fromTime? fromTime.getUTCMinutes() : 0;
+    toTimeMins = toTime ? toTime.getUTCMinutes() : 59;
+
     if(toTime<24){toTime+=1;}
     meals = meals.filter(function(meal){
-      return (meal.date.getUTCHours()>=fromTime && meal.date.getUTCHours() <= toTime )
+      return (meal.date.getUTCHours()>=fromTimeHours && meal.date.getUTCHours() <= toTimeHours )
     })
     return meals;
   }
